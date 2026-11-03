@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<title>Kabayan DXB – Kababayan Dubai Companion</title>
+<meta name="description" content="Offline guide for Filipinos moving NAIA → DXB → Jebel Ali.">
+<meta name="theme-color" content="#1f2a3a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Kabayan DXB">
+<meta property="og:title" content="Kabayan DXB"><meta property="og:description" content="Lapag sa DXB guide, AED↔PHP, Nol, SOS. Works offline.">
+<meta property="og:image" content="og-image.png"><meta property="og:type" content="website">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="alternate icon" href="favicon.ico">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header class="top">
+  <div class="island" id="island" aria-live="polite"><i class="dot"></i><span id="netTxt">Online</span></div>
+  <div class="tools">
+    <button id="modeBtn" aria-label="Change display mode">☀ Light</button>
+    <button id="shareBtn" aria-label="Share app">Share</button>
+  </div>
+</header>
+<div id="offBanner" class="banner" role="status">Offline ka ngayon – gumagana pa rin ang app.</div>
+
+<main>
+  <input id="q" class="search" type="search" placeholder="Hanap: food, wifi, tel, rate…" aria-label="Search">
+  <section id="results" class="card" hidden><h2>Resulta</h2><div id="resList"></div></section>
+
+  <section data-tab="home" class="active">
+    <h1>Kabayan Guide</h1>
+    <p class="sub">NAIA → DXB → AGAC Jebel Ali</p>
+    <div class="bento">
+      <div class="card wide"><h2>Oras</h2><div class="clocks"><div><b id="tDxb">--:--</b><small>Dubai</small></div><div><b id="tMnl">--:--</b><small>Manila (+4h)</small></div></div></div>
+      <div class="card"><h2>AED → PHP</h2><b id="homeRate" class="big">–</b><small>1 AED</small></div>
+      <div class="card"><h2>Susunod na hakbang</h2><p id="nextStep">–</p><small id="prog"></small></div>
+      <button class="card act" id="standbyBtn">Standby view</button>
+      <button class="card act sos" data-sos>SOS</button>
+    </div>
+    <div class="card" id="weekNote"></div>
+  </section>
+
+  <section data-tab="route">
+    <h2>Lapag sa DXB – Checklist</h2><div id="steps"></div>
+    <div class="card"><h2>Jebel Ali commute card</h2>
+      <p>1. DXB T1/T3 Metro → Red Line toward <b>UAE Exchange</b> (Station 41 = <b>Danube</b>).<br>2. Sa Danube: bus <b>F49</b> (Jebel Ali Industrial Area) o <b>F47</b>; may bus 96 din sa Jebel Ali bus stops.<br>3. O taxi papuntang Plot 39, Refco Rd: ~AED 12–18 (estimate).</p>
+      <p class="warn">Nagbabago ang bus routes. Kumpirmahin sa RTA S'hail app o Google Maps pagdating. Taxi ang pinakaligtas sa unang araw.</p>
+      <p><a class="lnk" target="_blank" rel="noopener" href="https://maps.google.com/?q=Al+Gurg+Automation+%26+Controls+Jebel+Ali+Industrial+Area+1">Open AGAC in Maps</a></p></div>
+  </section>
+
+  <section data-tab="money">
+    <h2>Remit Calculator</h2>
+    <div class="card form">
+      <label>Halaga <input id="amt" type="number" inputmode="decimal" value="1000"></label>
+      <label>Direksyon <select id="dir"><option value="a2p">AED → PHP</option><option value="p2a">PHP → AED</option></select></label>
+      <label>Rate (1 AED = ? PHP) <input id="rate" type="number" step="0.01" inputmode="decimal"></label>
+      <label>Remittance center <select id="prov"></select></label>
+      <label>Remit fee (AED) <input id="fee" type="number" step="0.5" inputmode="decimal" value="15"></label><small id="rateSrc"></small>
+      <p class="warn">Rate at fee ay estimate lang. I-check sa Al Ansari / LuLu / Western Union bago magpadala.</p>
+      <b id="convOut" class="big">–</b><small id="convSub"></small>
+    </div>
+    <div class="card form"><h2>Budget bawat buwan (AED)</h2>
+      <label>Sahod <input id="bSal" type="number" inputmode="decimal" value="2500"></label>
+      <label>Bedspace/Rent <input id="bRent" type="number" inputmode="decimal" value="500"></label>
+      <label>Pagkain <input id="bFood" type="number" inputmode="decimal" value="500"></label>
+      <label>Nol/Transport <input id="bNol" type="number" inputmode="decimal" value="150"></label>
+      <label>Wi-Fi/DEWA/SIM <input id="bUtil" type="number" inputmode="decimal" value="150"></label>
+      <b id="bOut" class="big">–</b><small id="bSub"></small>
+    </div>
+    <div class="card form"><h2>Nol estimator</h2>
+      <label>Mula <select id="nFrom"></select></label><label>Hanggang <select id="nTo"></select></label>
+      <input id="zones" type="hidden" value="7.5"><small id="nolZ"></small>
+      <label>Biyahe bawat araw <input id="trips" type="number" value="2"></label>
+      <label>Araw bawat buwan <input id="days" type="number" value="26"></label>
+      <b id="nolOut" class="big">–</b><small>Estimate sa standard fares. Silver card ~AED 25 (may kasamang load). Gold = premium cabin, mas mahal. Red ticket = pang-isahan.</small>
+    </div>
+  </section>
+
+  <section data-tab="places">
+    <h2>Kain Tayo &amp; Wi-Fi</h2>
+    <div class="chips" id="chips"></div><div id="places"></div>
+    <div class="empty" id="emptyPlaces" hidden>Walang nahanap, Kabayan. Subukan ang ibang salita.</div>
+  </section>
+
+  <section data-tab="more">
+    <h2>Mas marami pa</h2>
+    <div class="card"><h2>Mabilis na text (WhatsApp)</h2><div id="wa"></div></div>
+    <div class="card"><h2>Iwas-scam: Bedspace &amp; upa</h2><ul id="scam"></ul></div>
+    <div class="card"><h2>Init &amp; batas</h2><ul id="tips"></ul></div>
+    <div class="card"><h2>SIM &amp; USSD</h2><ul id="sim"></ul><small>I-verify sa provider; nagbabago ang codes.</small></div>
+    <div class="card"><h2>Grocery (estimate)</h2><ul id="groc"></ul><small>Presyong tantiya lang.</small></div>
+    <div class="card warn"><h2>Summer midday break</h2><p>Bawal ang trabaho sa labas 12:30–3:00 PM tuwing Hunyo 15 – Setyembre 15. Uminom ng tubig, magpahinga sa lilim.</p></div>
+    <div class="card form"><h2>Notes locker (nasa device lang)</h2>
+      <label>AGAC office (+971 4 …) <input id="coContact" type="tel" placeholder="+971 4 …"></label>
+      <textarea id="notes" rows="5" placeholder="Emirates ID app no., UID, contract notes…"></textarea><small>Hindi ito ina-upload kahit saan.</small></div>
+    <div class="card form"><h2>Paalala sa padala</h2>
+      <label>Araw ng sahod (1–31) <input id="payDay" type="number" min="1" max="31" value="25"></label>
+      <button id="notifBtn">I-on ang paalala</button><small>Gumagana kapag bukas ang app (iOS: i-install muna sa Home Screen).</small></div>
+  </section>
+</main>
+
+<nav class="dock" aria-label="Main">
+  <button data-go="home" class="on">Home</button><button data-go="route">Ruta</button><button data-go="money">Pera</button><button data-go="places">Kain</button><button data-go="more">Iba pa</button>
+</nav>
+
+<div id="sheet" class="sheet" hidden><div class="grab"></div><h2>SOS – Dubai</h2><div id="sosList"></div><button class="close" id="sheetClose">Isara</button></div>
+<div id="standby" class="standby" hidden><div><b id="sDxb">--:--</b><small>Dubai</small></div><div><b id="sMnl">--:--</b><small>Manila</small></div><div><b id="sRate">–</b><small>AED→PHP</small></div><p id="sStep"></p><button class="sos" data-sos>SOS</button><button id="standbyClose">Lumabas</button></div>
+<div id="a2hs" class="a2hs" hidden>Tap <b>Share</b> ⬆ → <b>Add to Home Screen</b> <button id="a2hsX">×</button></div>
+<div id="toast" class="toast" role="status"></div>
+<script src="js/currency.js"></script><script src="js/routes.js"></script><script src="js/app.js"></script>
+</body></html>
